@@ -9,7 +9,6 @@ int ledPower = 2;   //Connect 3 led driver pins of dust sensor to Arduino D2
 int samplingTime = 280;
 int deltaTime = 40;
 int sleepTime = 9680;
-unsigned int v = 0;
  
 float voMeasured = 0;
 float calcVoltage = 0;
@@ -18,6 +17,7 @@ float dustDensity = 0;
 void setup(){
   Serial.begin(9600);
   pinMode(ledPower,OUTPUT);
+  analogReference(EXTERNAL); //LM4040 4.1 voltage reference connected to AREF
 }
  
 void loop(){
@@ -30,25 +30,19 @@ void loop(){
   digitalWrite(ledPower,HIGH); // turn the LED off
   delayMicroseconds(sleepTime);
  
-  // 0 - 5V mapped to 0 - 1023 integer values
-  // recover voltage
-  calcVoltage = voMeasured * (5.0 / 1024.0);
+  // 0 - 4.069V (LM4040 AREF) mapped to 0 - 1023 integer values
+  calcVoltage = voMeasured * (4.069 / 1024.0);
  
-  // linear eqaution taken from http://www.howmuchsnow.com/arduino/airquality/
-  // Chris Nafis (c) 2012
-  dustDensity = 0.17 * calcVoltage - 0.1;
+  // linear eqaution taken from http://www.pocketmagic.net/sharp-gp2y1010-dust-sensor/
+
+  //if (calcVoltage < 0.583)  
+  //  dustDensity = 0;
+  //else
+    dustDensity = 6 * calcVoltage / 35 - 0.1;
  
-  //Serial.print("Raw Signal Value (0-1023): ");
-  //Serial.print(voMeasured);
- 
-  //Serial.print(" - Voltage: ");
-  //Serial.print(calcVoltage);
- 
-  //Serial.print(" - Dust Density: ");
-  //Serial.print(dustDensity); // unit: mg/m3
   Serial.print(dustDensity);
   Serial.print(" ");
-  Serial.print(v);
+  Serial.print(0);
   Serial.print("\n");
   delay(1000);
 }

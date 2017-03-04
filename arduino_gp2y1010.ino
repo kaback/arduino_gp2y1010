@@ -30,8 +30,8 @@ void loop(){
   digitalWrite(ledPower,HIGH); // turn the LED off
   delayMicroseconds(sleepTime);
  
-  // 0 - 4.069V (LM4040 AREF) mapped to 0 - 1023 integer values
-  calcVoltage = voMeasured * (4.069 / 1024.0);
+  // 0 - 4.096V (LM4040 AREF) mapped to 0 - 1023 integer values
+  calcVoltage = voMeasured * (4.096 / 1024.0);
  
   // linear eqaution taken from http://www.pocketmagic.net/sharp-gp2y1010-dust-sensor/
 
